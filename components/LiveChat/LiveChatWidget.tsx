@@ -119,7 +119,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
         id,
       } = receivedData;
 
-      if (chatProfileId === profileId && handle !== "system") {
+      if (chatProfileId === profileId && handle !== "System") {
         // run pop up sound
 
         setMessages((prev) => {
