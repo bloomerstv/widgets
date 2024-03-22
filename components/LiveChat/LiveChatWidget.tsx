@@ -57,15 +57,12 @@ const DUMMY_MESSAGES: MessageType[] = [
 ];
 
 const LiveChatWidget = ({ profileId }: { profileId: string }) => {
-  console.log("LiveChatWidget rendered"); // Add this line
-
   const [messages, setMessages] = useState<MessageType[]>([]);
 
   const searchParams = useSearchParams();
   const emulate = searchParams.get("emulate");
 
   useEffect(() => {
-    console.log("emulate", emulate);
     if (emulate) {
       const handleEmulate = async () => {
         // show dummy chat
@@ -93,7 +90,6 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
   }, [emulate]);
 
   useEffect(() => {
-    console.log("connecting socket");
     // const listenToSocket = async () => {
     // const authorToken = await getAccessToken()
     const newSocket = io(LIVE_CHAT_WEB_SOCKET_URL, {

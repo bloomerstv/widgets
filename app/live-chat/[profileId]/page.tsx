@@ -10,7 +10,6 @@ const LiveChatWidgetPage = ({
   };
 }) => {
   if (!params.profileId) return null;
-  console.log("LiveChatWidgetPage rendered"); // Add this line
   return (
     <div>
       <LiveChatWidget profileId={params.profileId} />
