@@ -21,3 +21,10 @@ export const LIVE_CHAT_WEB_SOCKET_URL =
     ? `wss://api.bloomers.tv`
     : `wss://bloomerstv-api-dev.onrender.com`;
 export const isMainnet = NODE_API_MODE === "production";
+
+export const LENS_MEDIA_SNAPSHOT_URL =
+  "https://ik.imagekit.io/lens/media-snapshot";
+export const ARWEAVE_GATEWAY = "https://arweave.net/";
+export const IPFS_GATEWAY = "https://gw.ipfs-lens.dev/ipfs/";
+
+export const AVATAR_TR = "tr:w-300,h-300";

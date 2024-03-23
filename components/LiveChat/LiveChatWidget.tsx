@@ -184,6 +184,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
             exit="exit"
             className="rounded-md z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 p-1.5 font-bold text-sm absolute top-0 left-0"
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={message.avatarUrl}
               alt="avatar"
