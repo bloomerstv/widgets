@@ -64,8 +64,6 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
   const emulate = searchParams.get("emulate");
   const limit = Number(searchParams.get("limit")) || 5;
 
-  console.log("limit", limit);
-
   useEffect(() => {
     if (emulate) {
       const handleEmulate = async () => {
