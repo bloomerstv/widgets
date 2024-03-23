@@ -221,7 +221,7 @@ const AlertBoxWidget = ({ profileId }: { profileId: string }) => {
             <Markup>
               {`${currentAlert.handle} ${
                 currentAlert.type === "PUBLICATION_COLLECTED"
-                  ? `collected your publication \n${
+                  ? `collected your post \n${
                       currentAlert.publicationTitle
                         ? `"${stringToLength(
                             currentAlert.publicationTitle,
