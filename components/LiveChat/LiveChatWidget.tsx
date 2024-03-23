@@ -3,6 +3,7 @@ import { LIVE_CHAT_WEB_SOCKET_URL } from "../../utils/config";
 import { io } from "socket.io-client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
+import Markup from "../Lexical/Markup";
 
 interface MessageType {
   content: string;
@@ -61,6 +62,9 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
 
   const searchParams = useSearchParams();
   const emulate = searchParams.get("emulate");
+  const limit = Number(searchParams.get("limit")) || 5;
+
+  console.log("limit", limit);
 
   useEffect(() => {
     if (emulate) {
@@ -70,7 +74,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
 
         for (const message of DUMMY_MESSAGES) {
           setMessages((prev) => {
-            return [...prev, message];
+            return [...prev, message].slice(-limit);
           });
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
@@ -131,7 +135,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
               handle,
               id,
             },
-          ].slice(-5);
+          ].slice(-limit);
         });
       }
     });
@@ -206,7 +210,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
               exit="exit"
               className="px-2 pb-1 w-fit min-w-[80px] bg-s-bg ml-3 pt-4 font-semibold text-md rounded-lg"
             >
-              <p>{message.content}</p>
+              <Markup>{message.content}</Markup>
             </motion.div>
           </div>
         </motion.div>

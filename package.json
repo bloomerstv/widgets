@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "framer-motion": "^11.0.20",
+    "interweave": "^13.1.0",
     "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",

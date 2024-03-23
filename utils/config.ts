@@ -20,3 +20,4 @@ export const LIVE_CHAT_WEB_SOCKET_URL =
     : NODE_API_MODE === "production"
     ? `wss://api.bloomers.tv`
     : `wss://bloomerstv-api-dev.onrender.com`;
+export const isMainnet = NODE_API_MODE === "production";
