@@ -22,8 +22,10 @@ interface SystemMessage extends MessageBase {
 interface ProfileMessage extends MessageBase {
   type: "Profile";
   profileId: string;
-  avatarUrl: string;
+  avatarUrl?: string;
   handle: string;
+  amount?: number;
+  currencySymbol?: string;
   id: string;
 }
 
@@ -188,41 +190,73 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
           <motion.div
             layout="position"
             key={message.id}
-            className="relative mb-2"
+            className="relative m-1"
           >
             {/* profile div */}
-            <motion.div
-              variants={profileAnimation}
-              key={message.id}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="rounded-md z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 p-1.5 font-bold text-sm absolute top-0 left-0"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={message.avatarUrl}
-                alt="avatar"
-                className="w-4 h-4 rounded-full"
-              />
-              <span
-                style={{
-                  lineHeight: 1,
-                }}
+            {message.amount ? (
+              <motion.div
+                variants={profileAnimation}
+                key={message.id}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="rounded-full z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1 px-2.5 font-bold text-sm absolute top-0 left-0"
               >
-                {message.handle}
-              </span>
-            </motion.div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={message.avatarUrl}
+                  alt="avatar"
+                  className="w-7 h-7 rounded-full"
+                />
+
+                <div className="flex flex-col items-start space-y-1 ml-1">
+                  <span
+                    style={{
+                      lineHeight: 1,
+                    }}
+                  >
+                    {message.handle}
+                  </span>
+
+                  <span className="text-xs pr-2">
+                    {message.amount} {message.currencySymbol}
+                  </span>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                variants={profileAnimation}
+                key={message.id}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                className="rounded-full z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1.5 px-2.5 font-bold text-sm absolute top-0 left-0"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={message.avatarUrl}
+                  alt="avatar"
+                  className="w-4 h-4 rounded-full"
+                />
+                <span
+                  style={{
+                    lineHeight: 1,
+                  }}
+                >
+                  {message.handle}
+                </span>
+              </motion.div>
+            )}
 
             {/* content div */}
-            <div className="pt-3">
+            <div className={message.amount ? "pt-8" : "pt-3"}>
               <motion.div
                 variants={contentAnimation}
                 key={message.id}
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="px-2 pb-1 w-fit min-w-[80px] bg-s-bg ml-3 pt-4 font-semibold text-md rounded-lg"
+                className={`px-2 pb-1 w-fit min-w-[80px] bg-s-bg ml-3 pt-4 font-semibold text-md rounded-lg`}
               >
                 <Markup>{message.content}</Markup>
               </motion.div>
