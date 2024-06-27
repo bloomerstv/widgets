@@ -22,6 +22,7 @@ interface SystemMessage extends MessageBase {
 interface ProfileMessage extends MessageBase {
   type: "Profile";
   profileId: string;
+  authorProfileId?: string;
   avatarUrl?: string;
   handle: string;
   amount?: number;
@@ -134,17 +135,11 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
     });
 
     newSocket.on("connect", () => {
-      setTimeout(() => {
-        newSocket.emit("join", profileId);
-        // if (!isSocketWithAuthToken && authorToken) {
-        //   setIsSocketWithAuthToken(true)
-        // }
-        // @ts-ignore
-        // setSocket(newSocket);
-      }, 1000); // Wait for 1 second before joining the room
+      newSocket.emit("join", profileId);
     });
 
     newSocket.on("message", (receivedData: Message) => {
+      if (receivedData.type === "System") return;
       setMessages((prev: Message[]) => {
         return [...prev, receivedData].slice(-limit);
       });
@@ -215,7 +210,8 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                       lineHeight: 1,
                     }}
                   >
-                    {message.handle}
+                    {message.handle}{" "}
+                    {message.profileId === message.authorProfileId && "🎙️"}
                   </span>
 
                   <span className="text-xs pr-2">
@@ -243,7 +239,8 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                     lineHeight: 1,
                   }}
                 >
-                  {message.handle}
+                  {message.handle}{" "}
+                  {message.profileId === message.authorProfileId && "🎙️"}
                 </span>
               </motion.div>
             )}
