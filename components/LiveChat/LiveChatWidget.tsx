@@ -135,10 +135,11 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
     });
 
     newSocket.on("connect", () => {
+      // join the room with the profileId of the streamer to listen to messages
       newSocket.emit("join", profileId);
     });
 
-    // listen to messages
+    // listen to messages of the chat
     newSocket.on("message", (receivedData: Message) => {
       if (receivedData.type === "System") return;
       setMessages((prev: Message[]) => {
