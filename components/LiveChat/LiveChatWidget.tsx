@@ -138,11 +138,23 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
       newSocket.emit("join", profileId);
     });
 
+    // listen to messages
     newSocket.on("message", (receivedData: Message) => {
       if (receivedData.type === "System") return;
       setMessages((prev: Message[]) => {
         return [...prev, receivedData].slice(-limit);
       });
+    });
+
+    // when streamer bans a profile, listed to this event to remove all the messages from the banned profile on the streamer chat to update the real-time
+    newSocket.on("remove-messages", (profileId: string) => {
+      setMessages((prev) =>
+        prev.filter((msg) => {
+          if (msg.type === "System") return true;
+
+          return msg.authorProfileId !== profileId;
+        })
+      );
     });
     // }
 
