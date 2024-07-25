@@ -1,27 +1,27 @@
-import type { ChildrenNode } from 'interweave'
-import { Matcher } from 'interweave'
+import type { ChildrenNode } from "interweave";
+import { Matcher } from "interweave";
 
 export class MDCodeMatcher extends Matcher {
   replaceWith(children: ChildrenNode) {
     return (
-      <code className="text-sm bg-gray-300 rounded-lg dark:bg-gray-700 px-[5px] py-[2px]">
+      <code className="text-sm bg-[#e7e7ea] rounded-lg px-[5px] py-[2px]">
         {children}
       </code>
-    )
+    );
   }
 
   asTag(): string {
-    return 'code'
+    return "code";
   }
 
   match(value: string) {
     return this.doMatch(
       value,
-      /`(.*?)`/u,
+      /`(.*?)`/,
       (matches) => ({
-        match: matches[1]
+        match: matches[1],
       }),
       true
-    )
+    );
   }
 }
