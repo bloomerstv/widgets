@@ -229,7 +229,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="rounded-full z-50 bg-brand bg-opacity-90 backdrop-filter backdrop-blur-md text-md text-white flex flex-row items-center gap-x-1 py-1 px-2.5 font-bold text-sm absolute top-0 left-0"
+                className="rounded-full z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1 px-2.5 font-bold text-sm absolute top-0 left-0"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -260,7 +260,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="rounded-full z-50 bg-brand bg-opacity-90 backdrop-filter backdrop-blur-md text-md text-white flex flex-row items-center gap-x-1 py-1.5 px-2.5 font-bold text-sm absolute top-0 left-0"
+                className="rounded-full z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1.5 px-2.5 font-bold text-sm absolute top-0 left-0"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -287,7 +287,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="px-2 pb-1 w-fit min-w-[80px] bg-s-bg bg-opacity-80 backdrop-blur-sm ml-3 pt-4 font-semibold text-md rounded-lg"
+                className="px-2 pb-1 w-fit min-w-[80px] bg-white/80 ml-3 pt-4 font-semibold text-md rounded-lg"
               >
                 <Markup>{message.content}</Markup>
               </motion.div>
