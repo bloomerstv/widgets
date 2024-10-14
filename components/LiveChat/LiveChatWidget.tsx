@@ -219,7 +219,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
           <motion.div
             layout="position"
             key={message.id}
-            className="relative m-1"
+            className="relative m-1 chat-container"
           >
             {/* profile div */}
             {message.amount ? (
@@ -229,13 +229,13 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="rounded-full z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1 px-2.5 font-bold text-sm absolute top-0 left-0"
+                className="rounded-full profile-container z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1 px-2.5 font-bold text-sm absolute top-0 left-0"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={message.avatarUrl}
                   alt="avatar"
-                  className="w-7 h-7 rounded-full"
+                  className="w-7 h-7 rounded-full avatar"
                 />
 
                 <div className="flex flex-col items-start space-y-1 ml-1">
@@ -243,12 +243,13 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                     style={{
                       lineHeight: 1,
                     }}
+                    className="handle"
                   >
                     {message.handle}{" "}
                     {message.profileId === message.authorProfileId && "🎙️"}
                   </span>
 
-                  <span className="text-xs pr-2">
+                  <span className="text-xs pr-2 super-chat">
                     {message.amount} {message.currencySymbol}
                   </span>
                 </div>
@@ -260,18 +261,19 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="rounded-full z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1.5 px-2.5 font-bold text-sm absolute top-0 left-0"
+                className="rounded-full profile-container z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1.5 px-2.5 font-bold text-sm absolute top-0 left-0"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={message.avatarUrl}
                   alt="avatar"
-                  className="w-4 h-4 rounded-full"
+                  className="w-4 h-4 rounded-full avatar"
                 />
                 <span
                   style={{
                     lineHeight: 1,
                   }}
+                  className="handle"
                 >
                   {message.handle}{" "}
                   {message.profileId === message.authorProfileId && "🎙️"}
@@ -287,9 +289,9 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="px-2 pb-1 w-fit min-w-[80px] bg-white/80 ml-3 pt-4 font-semibold text-md rounded-lg"
+                className="px-2 message-container pb-1 w-fit min-w-[80px] bg-white/80 ml-3 pt-4 font-semibold text-md rounded-lg"
               >
-                <Markup>{message.content}</Markup>
+                <Markup className="message">{message.content}</Markup>
               </motion.div>
             </div>
           </motion.div>
