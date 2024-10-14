@@ -96,6 +96,9 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
   const searchParams = useSearchParams();
   const emulate = searchParams.get("emulate");
   const limit = Number(searchParams.get("limit")) || 5;
+  const autoRemoveChatInterval = searchParams.get("autoRemoveChatInterval")
+    ? Number(searchParams.get("autoRemoveChatInterval")) || 0
+    : 5;
 
   useEffect(() => {
     if (emulate) {
@@ -111,13 +114,12 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
         }
 
         // remove all messages one by one from top every 1 second
-
-        for (let i = 0; i < DUMMY_MESSAGES.length; i++) {
-          setMessages((prev) => {
-            return prev.slice(1);
-          });
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
+        // for (let i = 0; i < DUMMY_MESSAGES.length; i++) {
+        //   setMessages((prev) => {
+        //     return prev.slice(1);
+        //   });
+        //   await new Promise((resolve) => setTimeout(resolve, 1000));
+        // }
       };
 
       handleEmulate();
@@ -170,6 +172,25 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!autoRemoveChatInterval) return;
+    if (autoRemoveChatInterval) {
+      const intervalId = setInterval(() => {
+        setMessages((prev) => {
+          if (prev.length > 0) {
+            return prev.slice(1);
+          }
+          return prev;
+        });
+      }, autoRemoveChatInterval * 1000);
+
+      if (messages.length === 0) {
+        clearInterval(intervalId);
+      }
+      return () => clearInterval(intervalId);
+    }
+  }, [autoRemoveChatInterval, messages]);
+
   const profileAnimation = {
     initial: { scale: 0, originX: 0, originY: 0 },
     animate: { scale: 1, transition: { duration: 0.2 } },
@@ -208,7 +229,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="rounded-full z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1 px-2.5 font-bold text-sm absolute top-0 left-0"
+                className="rounded-full z-50 bg-brand bg-opacity-90 backdrop-filter backdrop-blur-md text-md text-white flex flex-row items-center gap-x-1 py-1 px-2.5 font-bold text-sm absolute top-0 left-0"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -239,7 +260,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className="rounded-full z-50 bg-brand text-md text-white flex flex-row items-center gap-x-1 py-1.5 px-2.5 font-bold text-sm absolute top-0 left-0"
+                className="rounded-full z-50 bg-brand bg-opacity-90 backdrop-filter backdrop-blur-md text-md text-white flex flex-row items-center gap-x-1 py-1.5 px-2.5 font-bold text-sm absolute top-0 left-0"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -266,7 +287,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                className={`px-2 pb-1 w-fit min-w-[80px] bg-s-bg ml-3 pt-4 font-semibold text-md rounded-lg`}
+                className="px-2 pb-1 w-fit min-w-[80px] bg-s-bg bg-opacity-80 backdrop-blur-sm ml-3 pt-4 font-semibold text-md rounded-lg"
               >
                 <Markup>{message.content}</Markup>
               </motion.div>
