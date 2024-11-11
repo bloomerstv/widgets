@@ -4,41 +4,15 @@ import { io } from "socket.io-client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import Markup from "../Lexical/Markup";
-
-// Base type for common fields
-interface MessageBase {
-  content: string;
-  time?: string;
-  type: "System" | "Profile";
-  id: string;
-}
-
-// Type for messages of type "System"
-interface SystemMessage extends MessageBase {
-  type: "System";
-}
-
-// Type for messages of type "Profile"
-interface ProfileMessage extends MessageBase {
-  type: "Profile";
-  profileId: string;
-  authorProfileId?: string;
-  avatarUrl?: string;
-  handle: string;
-  amount?: number;
-  currencySymbol?: string;
-  id: string;
-}
-
-// Union type for a message that can be either a SystemMessage or a ProfileMessage
-type Message = SystemMessage | ProfileMessage;
+import { ContentType, Message, MessageType } from "./LiveChatType";
 
 const DUMMY_MESSAGES: Message[] = [
   {
     id: "t5vj8xybw",
     handle: "kontak",
-    type: "Profile",
+    type: MessageType.Profile,
     profileId: "profileId",
+    contentType: ContentType.Comment,
     avatarUrl:
       "https://ik.imagekit.io/lens/media-snapshot/tr:w-300,h-300/ef7d15b15d35019de299a98588b181ceceb754b197ef26e05f0f4062c1d2bd9e.gif",
     content: "GM, GM 🌞",
@@ -46,8 +20,9 @@ const DUMMY_MESSAGES: Message[] = [
   {
     id: "t5vj8xybe",
     handle: "mycaleum",
-    type: "Profile",
+    type: MessageType.Profile,
     profileId: "profileId",
+    contentType: ContentType.Comment,
     avatarUrl:
       "https://ik.imagekit.io/lens/media-snapshot/tr:w-300,h-300/5d45fe67e4b263ed997e4037318e4e8e46724c034150d8151120ab7935ba996f.gif",
     content: "GM !!!!",
@@ -55,8 +30,10 @@ const DUMMY_MESSAGES: Message[] = [
   {
     id: "t5vj8xybx",
     handle: "kontak",
-    type: "Profile",
+    type: MessageType.Profile,
     profileId: "profileId",
+    contentType: ContentType.Comment,
+
     avatarUrl:
       "https://ik.imagekit.io/lens/media-snapshot/tr:w-300,h-300/ef7d15b15d35019de299a98588b181ceceb754b197ef26e05f0f4062c1d2bd9e.gif",
     content: "Let's play some COD",
@@ -64,8 +41,10 @@ const DUMMY_MESSAGES: Message[] = [
   {
     id: "t5vj8xyjx",
     handle: "asamisscream",
-    type: "Profile",
+    type: MessageType.Profile,
     profileId: "profileId",
+    contentType: ContentType.Comment,
+
     avatarUrl:
       "https://ik.imagekit.io/lens/media-snapshot/tr:w-300,h-300/27e999df6646b28db7b4496179c7e33a18350ff3bb301f2edf3bbf6daa83d9b0.png",
     content: "おはよう 🌅",
@@ -73,8 +52,10 @@ const DUMMY_MESSAGES: Message[] = [
   {
     id: "t5vj8xalx",
     handle: "b0gie",
-    type: "Profile",
+    type: MessageType.Profile,
     profileId: "profileId",
+    contentType: ContentType.Comment,
+
     avatarUrl:
       "https://ik.imagekit.io/lens/media-snapshot/tr:w-300,h-300/4a9727e63860cc2b4d8b347016ec19484b61f9922db7235f98e49f557818d72e.webp",
     content: "Will be there in 5 minutes 🚗",
@@ -82,8 +63,10 @@ const DUMMY_MESSAGES: Message[] = [
   {
     id: "t5vj8xglx",
     handle: "b0gie",
-    type: "Profile",
+    type: MessageType.Profile,
     profileId: "profileId",
+    contentType: ContentType.Comment,
+
     avatarUrl:
       "https://ik.imagekit.io/lens/media-snapshot/tr:w-300,h-300/4a9727e63860cc2b4d8b347016ec19484b61f9922db7235f98e49f557818d72e.webp",
     content: "Gonna rap while playing COD, LFG!",
@@ -143,7 +126,11 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
 
     // listen to messages of the chat
     newSocket.on("message", (receivedData: Message) => {
-      if (receivedData.type === "System") return;
+      if (
+        receivedData.type === "System" ||
+        receivedData.contentType !== ContentType.Comment
+      )
+        return;
       setMessages((prev: Message[]) => {
         return [...prev, receivedData].slice(-limit);
       });
