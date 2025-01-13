@@ -14,8 +14,8 @@
     "framer-motion": "^11.17.0",
     "interweave": "^13.1.0",
     "next": "15.1.4",
-    "react": "^19",
-    "react-dom": "^19",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "socket.io-client": "^4.8.1",
     "uuid": "^11.0.5"
   },

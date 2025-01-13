@@ -20,6 +20,19 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## Dependencies Note
+
+This project intentionally uses React 18.2.0 and does not upgrade to React 19.0.0 due to the following dependency constraints:
+
+- `interweave@13.1.0` requires `react@^16.8.0 || ^17.0.0 || ^18.0.0`
+- Upgrading to React 19.0.0 would break compatibility with `interweave`
+
+```bash
+# Current working versions
+"react": "18.2.0",
+"react-dom": "18.2.0"
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
