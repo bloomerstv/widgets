@@ -2,17 +2,14 @@
 import React from "react";
 import AlertBoxWidget from "../../../components/AlertBox/AlertBoxWidget";
 
-const AlexBoxPage = ({
-  params,
-}: {
-  params: {
+const AlexBoxPage = ({ params }: { params: any }) => {
+  const { profileId } = React.use<{
     profileId: string;
-  };
-}) => {
-  if (!params.profileId) return null;
+  }>(params);
+  if (!profileId) return null;
   return (
     <div>
-      <AlertBoxWidget profileId={params.profileId} />
+      <AlertBoxWidget profileId={profileId} />
     </div>
   );
 };

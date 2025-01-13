@@ -2,17 +2,14 @@
 import React, { memo } from "react";
 import LiveChatWidget from "../../../components/LiveChat/LiveChatWidget";
 
-const LiveChatWidgetPage = ({
-  params,
-}: {
-  params: {
+const LiveChatWidgetPage = ({ params }: { params: any }) => {
+  const { profileId } = React.use<{
     profileId: string;
-  };
-}) => {
-  if (!params.profileId) return null;
+  }>(params);
+  if (!profileId) return null;
   return (
     <div>
-      <LiveChatWidget profileId={params.profileId} />
+      <LiveChatWidget profileId={profileId} />
     </div>
   );
 };
