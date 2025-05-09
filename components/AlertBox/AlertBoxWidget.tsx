@@ -1,32 +1,33 @@
-import React, { use, useEffect, useState } from "react";
-import { NODE_API_URL } from "../../utils/config";
-import { useSearchParams } from "next/navigation";
-import { ALERT_TYPES } from "./alertTypes";
-import { lensClient } from "../../utils/lensClient";
-import { AnimatePresence, motion } from "framer-motion";
-import { stringToLength } from "../../utils/helpers";
-import getAvatar from "../../utils/getAvatar";
-import { OpenActionModuleType } from "@lens-protocol/client";
-import Markup from "../Lexical/Markup";
+import React, { use, useEffect, useState } from "react"
+import { NODE_API_URL } from "../../utils/config"
+import { useSearchParams } from "next/navigation"
+import { ALERT_TYPES } from "./alertTypes"
+import { lensClient } from "../../utils/lensClient"
+import { AnimatePresence, motion } from "framer-motion"
+import { stringToLength } from "../../utils/helpers"
+import getAvatar from "../../utils/getAvatar"
+import Markup from "../Lexical/Markup"
+import { fetchAccount, fetchPost } from "@lens-protocol/client/actions"
+import { PostAction } from "@lens-protocol/client"
 
 interface ShowAlertType {
-  type: "PUBLICATION_COLLECTED" | "PROFILE_FOLLOWED";
-  handle?: string;
-  avatar?: string;
-  publicationTitle?: string;
-  collectCurrency?: string;
-  collectAmount?: string;
+  type: "POST_COLLECTED" | "ACCOUNT_FOLLOWED"
+  handle?: string
+  avatar?: string
+  publicationTitle?: string
+  collectCurrency?: string
+  collectAmount?: string
 }
 
 const DUMMY_ALERTS: ShowAlertType[] = [
   {
-    type: "PROFILE_FOLLOWED",
+    type: "ACCOUNT_FOLLOWED",
     handle: "kontak",
     avatar:
       "https://ik.imagekit.io/lens/media-snapshot/tr:w-300,h-300/ef7d15b15d35019de299a98588b181ceceb754b197ef26e05f0f4062c1d2bd9e.gif",
   },
   {
-    type: "PUBLICATION_COLLECTED",
+    type: "POST_COLLECTED",
     handle: "b0gie",
     avatar:
       "https://ik.imagekit.io/lens/media-snapshot/tr:w-300,h-300/4a9727e63860cc2b4d8b347016ec19484b61f9922db7235f98e49f557818d72e.webp",
@@ -34,142 +35,151 @@ const DUMMY_ALERTS: ShowAlertType[] = [
     collectCurrency: "WMATIC",
     collectAmount: "5",
   },
-];
+]
 
-const AlertBoxWidget = ({ profileId }: { profileId: string }) => {
-  const searchParams = useSearchParams();
-  const emulate = searchParams.get("emulate") === "true";
-  const [collectAlerts, setCollectAlerts] = React.useState(true);
-  const [newFollowersAlerts, setNewFollowersAlerts] = React.useState(true);
+const AlertBoxWidget = ({ accountAddress }: { accountAddress: string }) => {
+  const searchParams = useSearchParams()
+  const emulate = searchParams.get("emulate") === "true"
+  const [collectAlerts, setCollectAlerts] = React.useState(true)
+  const [newFollowersAlerts, setNewFollowersAlerts] = React.useState(true)
 
-  const [currentAlert, setCurrentAlert] = useState<ShowAlertType | null>(null);
-  const [alertQueue, setAlertQueue] = useState<ShowAlertType[]>([]);
+  const [currentAlert, setCurrentAlert] = useState<ShowAlertType | null>(null)
+  const [alertQueue, setAlertQueue] = useState<ShowAlertType[]>([])
 
   const hanldeEmulate = async () => {
-    addAlert(DUMMY_ALERTS[0]);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    addAlert(DUMMY_ALERTS[1]);
-  };
+    addAlert(DUMMY_ALERTS[0])
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    addAlert(DUMMY_ALERTS[1])
+  }
 
   useEffect(() => {
-    if (!emulate) return;
-    hanldeEmulate();
-  }, [emulate]);
+    if (!emulate) return
+    hanldeEmulate()
+  }, [emulate])
 
   // Function to add a new alert
   const addAlert = (newAlert: ShowAlertType) => {
     if (currentAlert) {
       // If there's already an alert, add the new alert to the queue
-      setAlertQueue((prevQueue) => [...prevQueue, newAlert]);
+      setAlertQueue((prevQueue) => [...prevQueue, newAlert])
     } else {
       // If there's no alert, show the new alert
-      setCurrentAlert(newAlert);
+      setCurrentAlert(newAlert)
     }
-  };
+  }
 
   // When the current alert changes, set a timeout to remove it after 5 seconds
   useEffect(() => {
     if (currentAlert) {
       const timeout = setTimeout(() => {
-        setCurrentAlert(null);
-      }, 5000);
+        setCurrentAlert(null)
+      }, 5000)
 
-      return () => clearTimeout(timeout);
+      return () => clearTimeout(timeout)
     }
-  }, [currentAlert]);
+  }, [currentAlert])
 
   // When the current alert is removed, show the next alert from the queue
   useEffect(() => {
     if (!currentAlert && alertQueue.length > 0) {
-      setCurrentAlert(alertQueue[0]);
-      setAlertQueue((prevQueue) => prevQueue.slice(1));
+      setCurrentAlert(alertQueue[0])
+      setAlertQueue((prevQueue) => prevQueue.slice(1))
     }
-  }, [currentAlert, alertQueue]);
+  }, [currentAlert, alertQueue])
 
   useEffect(() => {
-    const newCollects = searchParams.get("newCollects") === "true";
-    const newFollowers = searchParams.get("newFollowers") === "true";
-    setCollectAlerts(newCollects);
-    setNewFollowersAlerts(newFollowers);
-  }, [searchParams]);
+    const newCollects = searchParams.get("newCollects") === "true"
+    const newFollowers = searchParams.get("newFollowers") === "true"
+    setCollectAlerts(newCollects)
+    setNewFollowersAlerts(newFollowers)
+  }, [searchParams])
 
-  const handleCollectPublication = async (
-    collectorProfileId: string,
-    serverPubId: string
+  const handleCollectPost = async (
+    collectorAccountAddress: string,
+    postId: string
   ) => {
-    const profile = await lensClient.profile.fetch({
-      forProfileId: collectorProfileId,
-    });
+    const account = await fetchAccount(lensClient, {
+      address: collectorAccountAddress,
+    })
 
-    const publication = await lensClient.publication.fetch({
-      forId: serverPubId,
-    });
+    const post = await fetchPost(lensClient, {
+      post: postId,
+    })
+
+    if (!post?.isOk() || !account?.isOk()) {
+      console.error("Post or account not found")
+      return
+    }
+
+    if (post?.value?.__typename !== "Post") {
+      console.error("IT's not a post")
+      return
+    }
 
     // @ts-ignore
-    const collectModule = publication?.openActionModules?.find(
-      (module: any) =>
-        module.type === OpenActionModuleType.SimpleCollectOpenActionModule ||
-        module.type ===
-          OpenActionModuleType.MultirecipientFeeCollectOpenActionModule
-    );
+    const collectModule = post?.value.actions.find(
+      (module: PostAction) => module.__typename === "SimpleCollectAction"
+    )
 
     // @ts-ignore
-    const amount = collectModule?.amount;
-    const value = amount?.value;
-    const symbol = amount?.asset?.symbol;
+    const amount = collectModule?.amount
+    const value = amount?.value
+    const symbol = amount?.asset?.symbol
 
     addAlert({
-      type: "PUBLICATION_COLLECTED",
-      handle: profile?.handle?.localName,
-      avatar: getAvatar(profile),
+      type: "POST_COLLECTED",
+      handle: post?.value?.author?.username?.localName,
+      avatar: getAvatar(post?.value?.author),
       collectAmount: value,
       collectCurrency: symbol,
       // @ts-ignore
-      publicationTitle: publication?.metadata?.content,
-    });
-  };
+      publicationTitle: post?.value?.metadata?.content,
+    })
+  }
 
-  const handleNewFollower = async (followerProfileId: string) => {
-    const profile = await lensClient.profile.fetch({
-      forProfileId: followerProfileId,
-    });
+  const handleNewFollower = async (followerAccountAddress: string) => {
+    const account = await fetchAccount(lensClient, {
+      address: followerAccountAddress,
+    })
+
+    if (!account?.isOk()) {
+      console.error("Account not found")
+      return
+    }
 
     addAlert({
-      type: "PROFILE_FOLLOWED",
-      handle: profile?.handle?.localName,
-      avatar: getAvatar(profile),
-    });
-  };
+      type: "ACCOUNT_FOLLOWED",
+      handle: account?.value?.username?.localName,
+      avatar: getAvatar(account?.value!),
+    })
+  }
 
   useEffect(() => {
     const newEventSource = new EventSource(
-      `${NODE_API_URL}/alerts/${profileId}?newCollects=${collectAlerts}&newFollowers=${newFollowersAlerts}`
-    );
+      `${NODE_API_URL}/alerts/${accountAddress}?newCollects=${collectAlerts}&newFollowers=${newFollowersAlerts}`
+    )
 
     newEventSource.onmessage = (event) => {
-      const eventData: ALERT_TYPES = JSON.parse(event.data);
+      const eventData: ALERT_TYPES = JSON.parse(event.data)
       // Handle the received event data here
-      if (eventData.type === "PUBLICATION_COLLECTED") {
+      if (eventData.type === "POST_COLLECTED") {
         // handle and show collected alert
-        handleCollectPublication(
-          eventData.collectorProfileId,
-          eventData.serverPubId
-        );
-      } else if (eventData.type === "PROFILE_FOLLOWED") {
+        handleCollectPost(eventData.collectorAccountAddress, eventData.postId)
+      } else if (eventData.type === "ACCOUNT_FOLLOWED") {
         // handle and show new follower alert
-        handleNewFollower(eventData.followerProfileId);
+        handleNewFollower(eventData.followerAccountAddress)
       }
-    };
+    }
 
     newEventSource.onerror = (error) => {
-      console.error("EventSource failed:", error);
+      console.error("EventSource failed:", error)
       // Handle errors
-    };
+    }
 
     return () => {
-      newEventSource.close();
-    };
-  }, [collectAlerts, newFollowersAlerts]);
+      newEventSource.close()
+    }
+  }, [collectAlerts, newFollowersAlerts])
 
   return (
     <AnimatePresence>
@@ -220,7 +230,7 @@ const AlertBoxWidget = ({ profileId }: { profileId: string }) => {
           >
             <Markup>
               {`${currentAlert.handle} ${
-                currentAlert.type === "PUBLICATION_COLLECTED"
+                currentAlert.type === "POST_COLLECTED"
                   ? `collected your post \n${
                       currentAlert.publicationTitle
                         ? `"${stringToLength(
@@ -241,7 +251,7 @@ const AlertBoxWidget = ({ profileId }: { profileId: string }) => {
         </motion.div>
       )}
     </AnimatePresence>
-  );
-};
+  )
+}
 
-export default AlertBoxWidget;
+export default AlertBoxWidget

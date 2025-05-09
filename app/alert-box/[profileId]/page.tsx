@@ -1,17 +1,17 @@
-"use client";
-import React from "react";
-import AlertBoxWidget from "../../../components/AlertBox/AlertBoxWidget";
+"use client"
+import React from "react"
+import AlertBoxWidget from "../../../components/AlertBox/AlertBoxWidget"
 
 const AlexBoxPage = ({ params }: { params: any }) => {
-  const { profileId } = React.use<{
-    profileId: string;
-  }>(params);
-  if (!profileId) return null;
+  const { accountAddress } = React.use<{
+    accountAddress: string
+  }>(params)
+  if (!accountAddress) return null
   return (
     <div>
-      <AlertBoxWidget profileId={profileId} />
+      <AlertBoxWidget accountAddress={accountAddress} />
     </div>
-  );
-};
+  )
+}
 
-export default AlexBoxPage;
+export default AlexBoxPage

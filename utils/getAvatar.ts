@@ -1,7 +1,8 @@
-import { AVATAR_TR } from "./config";
-import getStampFyiURL from "./getStampFyiURL";
-import imageKit from "./imageKit";
-import sanitizeDStorageUrl from "./sanitizeDStorageUrl";
+import { Account } from "@lens-protocol/client"
+import { AVATAR_TR, ZERO_ADDRESS } from "./config"
+import getStampFyiURL from "./getStampFyiURL"
+import imageKit from "./imageKit"
+import sanitizeDStorageUrl from "./sanitizeDStorageUrl"
 
 /**
  * Returns the avatar image URL for a given profile.
@@ -10,18 +11,13 @@ import sanitizeDStorageUrl from "./sanitizeDStorageUrl";
  * @param namedTransform The named transform to use.
  * @returns The avatar image URL.
  */
-const getAvatar = (profile: any, namedTransform = AVATAR_TR): string => {
+const getAvatar = (account: Account, namedTransform = AVATAR_TR): string => {
   const avatarUrl =
-    // Group Avatar fallbacks
-    profile?.avatar ??
-    // Lens NFT Avatar fallbacks
-    profile?.metadata?.picture?.image?.optimized?.uri ??
-    profile?.metadata?.picture?.image?.raw?.uri ??
-    // Lens Profile Avatar fallbacks
-    profile?.metadata?.picture?.optimized?.uri ??
-    profile?.metadata?.picture?.raw?.uri ??
-    getStampFyiURL(profile?.ownedBy.address);
-  return imageKit(sanitizeDStorageUrl(avatarUrl), namedTransform);
-};
+    account?.metadata?.picture ?? getStampFyiURL(account?.owner ?? ZERO_ADDRESS)
 
-export default getAvatar;
+  console.log("avatarUrl", avatarUrl)
+
+  return imageKit(sanitizeDStorageUrl(avatarUrl), namedTransform)
+}
+
+export default getAvatar

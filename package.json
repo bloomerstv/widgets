@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@lens-protocol/client": "^2.3.2",
+    "@lens-protocol/client": "^0.0.0-canary-20250507164041",
     "eslint": "^9.18.0",
     "framer-motion": "^11.17.0",
     "interweave": "^13.1.0",
