@@ -60,10 +60,10 @@ export interface SendMessageCommentType extends SendMessageBaseType {
   txHash?: string
 }
 
-export interface SendMessageClipTyep extends SendMessageBaseType {
+export interface SendMessageClipType extends SendMessageBaseType {
   type: ContentType.Clip
   clipPostId: string
   image: string
 }
 
-export type SendMessageType = SendMessageCommentType | SendMessageClipTyep
+export type SendMessageType = SendMessageCommentType | SendMessageClipType
