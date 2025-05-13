@@ -75,6 +75,7 @@ const DUMMY_MESSAGES: Message[] = [
 
 const LiveChatWidget = ({ profileId }: { profileId: string }) => {
   const [messages, setMessages] = useState<Message[]>([])
+  const [uniqueMessages, setUniqueMessages] = useState<Message[]>([])
 
   const searchParams = useSearchParams()
   const emulate = searchParams.get("emulate")
@@ -82,6 +83,17 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
   const autoRemoveChatInterval = searchParams.get("autoRemoveChatInterval")
     ? Number(searchParams.get("autoRemoveChatInterval")) || 0
     : 5
+
+  // Filter out duplicate messages by ID
+  useEffect(() => {
+    const seen = new Set()
+    const filteredArr = messages.filter((el) => {
+      const duplicate = seen.has(el.id)
+      seen.add(el.id)
+      return !duplicate
+    })
+    setUniqueMessages(filteredArr)
+  }, [messages])
 
   useEffect(() => {
     if (emulate) {
@@ -197,7 +209,7 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
 
   return (
     <AnimatePresence>
-      {messages.map((message) => {
+      {uniqueMessages.map((message) => {
         // if you are want to show system messages you can show them by comparing the type like this,
         // for this widget we are only showing profile messages
         if (message.type === "System") return null
