@@ -73,7 +73,7 @@ const DUMMY_MESSAGES: Message[] = [
   },
 ]
 
-const LiveChatWidget = ({ profileId }: { profileId: string }) => {
+const LiveChatWidget = ({ accountAddress }: { accountAddress: string }) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [uniqueMessages, setUniqueMessages] = useState<Message[]>([])
 
@@ -132,8 +132,8 @@ const LiveChatWidget = ({ profileId }: { profileId: string }) => {
     })
 
     newSocket.on("connect", () => {
-      // join the room with the profileId of the streamer to listen to messages
-      newSocket.emit("join", profileId)
+      // join the room with the accountAddress of the streamer to listen to messages
+      newSocket.emit("join", accountAddress)
     })
 
     // listen to messages of the chat
