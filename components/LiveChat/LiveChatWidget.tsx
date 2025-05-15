@@ -88,6 +88,12 @@ const LiveChatWidget = ({ accountAddress }: { accountAddress: string }) => {
   useEffect(() => {
     const seen = new Set()
     const filteredArr = messages.filter((el) => {
+      if (
+        el.type === MessageType.Account &&
+        el.contentType !== ContentType.Comment
+      ) {
+        return false
+      }
       const duplicate = seen.has(el.id)
       seen.add(el.id)
       return !duplicate
